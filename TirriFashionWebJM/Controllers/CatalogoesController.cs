@@ -105,38 +105,54 @@ namespace TirriFashionWebJM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Imagen,Descripcion,AñoFabricacion,IdUsuario,IdCategoria")] Catalogo catalogo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Imagen,Descripcion,AñoFabricacion,IdUsuario,IdCategoria")] Catalogo catalogo, IFormFile imagen)
         {
             if (id != catalogo.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(catalogo);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CatalogoExists(catalogo.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdCategoria"] = new SelectList(_context.Categoria, "Id", "Id", catalogo.IdCategoria);
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "Id", "Id", catalogo.IdUsuario);
-            return View(catalogo);
-        }
+            var existingCatalogo = await _context.Catalogos.FindAsync(id);
 
+            if (existingCatalogo == null)
+            {
+                return NotFound();
+            }
+
+            if (imagen != null && imagen.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await imagen.CopyToAsync(memoryStream);
+                    existingCatalogo.Imagen = memoryStream.ToArray();
+                }
+            }
+
+            existingCatalogo.Nombre = catalogo.Nombre;
+            existingCatalogo.Descripcion = catalogo.Descripcion;
+            existingCatalogo.AñoFabricacion = catalogo.AñoFabricacion;
+            existingCatalogo.IdUsuario = catalogo.IdUsuario;
+            existingCatalogo.IdCategoria = catalogo.IdCategoria;
+
+            try
+            {
+                _context.Update(existingCatalogo);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CatalogoExists(catalogo.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
         // GET: Catalogoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
