@@ -35,6 +35,8 @@ namespace TirriFashionWebJM.Models
         [DataType(DataType.Password)]
         public string ConfirmarPassword { get; set; }
 
+        [NotMapped]
+        public int Take { get; set; }
         public virtual ICollection<Catalogo> Catalogos { get; set; }
         public virtual ICollection<Reseña> Reseñas { get; set; }
     }

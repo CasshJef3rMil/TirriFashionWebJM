@@ -21,11 +21,29 @@ namespace TirriFashionWebJM.Controllers
         }
 
         // GET: Usuarios
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Usuario usuario)
         {
-            return _context.Usuarios != null ?
-                        View(await _context.Usuarios.ToListAsync()) :
-                        Problem("Entity set 'TirriFashionWebJMContext.Usuarios'  is null.");
+
+            //esta parte es para el filtro
+            var query = _context.Usuarios.AsQueryable();
+            if (string.IsNullOrWhiteSpace(usuario.Nombre) == false)
+            {
+                query = query.Where(s => s.Nombre.Contains(usuario.Nombre));
+            }
+            if (string.IsNullOrWhiteSpace(usuario.Apellido) == false)
+            {
+                query = query.Where(s => s.Apellido.Contains(usuario.Apellido));
+            }
+            if (usuario.Estatus == 1 || usuario.Estatus == 2)
+            {
+                query = query.Where(s => s.Estatus == usuario.Estatus);
+            }
+            if (usuario.Take == 0)
+                usuario.Take = 10;
+            query = query.Take(usuario.Take);
+            return query != null ?
+                                    View(await query.ToListAsync()) :
+                                    Problem("Entity set 'TirriFashionWebJMContext.Usuarios'  is null.");
         }
 
         // GET: Usuarios/Details/5
