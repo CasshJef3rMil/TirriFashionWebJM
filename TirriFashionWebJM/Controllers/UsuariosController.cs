@@ -55,7 +55,7 @@ namespace TirriFashionWebJM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Contraseña")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Contraseña,Rol")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace TirriFashionWebJM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Contraseña")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Contraseña,Rol")] Usuario usuario)
         {
             if (id != usuario.Id)
             {

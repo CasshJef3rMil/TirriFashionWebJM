@@ -18,6 +18,7 @@ namespace TirriFashionWebJM.Models
         public string Email { get; set; } = null!;
         public string? Telefono { get; set; }
         public string? Contraseña { get; set; }
+        public string Rol { get; set; } = null!;
 
         public virtual ICollection<Catalogo> Catalogos { get; set; }
         public virtual ICollection<Reseña> Reseñas { get; set; }
