@@ -28,8 +28,9 @@
                 @Html.DisplayNameFor(model => model.Telefono)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Contraseña)
-            </th> 
+                @Html.DisplayNameFor(model => model.Estatus)
+            </th>
+        
             <th>
                 @Html.DisplayNameFor(model => model.Rol)
             </th>
@@ -54,9 +55,17 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Telefono)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Contraseña)
-            </td> 
+                <td>
+                    @if (item.Estatus ==1)
+                    {
+                        <span>Activo</span>
+                    }
+                    else
+                    {
+                        <span>Inactivo</span>
+                    }
+                </td>
+     
             <td>
                 @Html.DisplayFor(modelItem => item.Rol)
             </td>

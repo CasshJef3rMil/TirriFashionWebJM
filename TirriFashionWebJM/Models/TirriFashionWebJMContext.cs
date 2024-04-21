@@ -100,9 +100,7 @@ namespace TirriFashionWebJM.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Contraseña)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
+                entity.Property(e => e.Contraseña).HasMaxLength(100);
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(255)

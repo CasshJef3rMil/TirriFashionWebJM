@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,9 +23,9 @@ namespace TirriFashionWebJM.Controllers
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
-              return _context.Usuarios != null ? 
-                          View(await _context.Usuarios.ToListAsync()) :
-                          Problem("Entity set 'TirriFashionWebJMContext.Usuarios'  is null.");
+            return _context.Usuarios != null ?
+                        View(await _context.Usuarios.ToListAsync()) :
+                        Problem("Entity set 'TirriFashionWebJMContext.Usuarios'  is null.");
         }
 
         // GET: Usuarios/Details/5
@@ -55,15 +57,14 @@ namespace TirriFashionWebJM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Contraseña,Rol")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Contraseña,Rol,Estatus")] Usuario usuario)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(usuario);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(usuario);
+            usuario.Contraseña = CalcularHashMD5(usuario.Contraseña);
+
+            _context.Add(usuario);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
         }
 
         // GET: Usuarios/Edit/5
@@ -87,33 +88,38 @@ namespace TirriFashionWebJM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Contraseña,Rol")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Rol,Estatus")] Usuario usuario)
         {
             if (id != usuario.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(usuario);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UsuarioExists(usuario.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                var usuarioData = await _context.Usuarios.FirstOrDefaultAsync(s => s.Id == id);
+                usuarioData.Nombre = usuario.Nombre;
+                usuarioData.Apellido = usuario.Apellido;
+                usuarioData.Edad = usuario.Edad;
+                usuarioData.Email = usuario.Email;
+                usuarioData.Telefono = usuario.Telefono;
+                usuarioData.Rol = usuario.Rol;
+                usuarioData.Estatus = usuario.Estatus;
+                _context.Update(usuarioData);
+                await _context.SaveChangesAsync();
             }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UsuarioExists(usuario.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
             return View(usuario);
         }
 
@@ -149,14 +155,34 @@ namespace TirriFashionWebJM.Controllers
             {
                 _context.Usuarios.Remove(usuario);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UsuarioExists(int id)
         {
-          return (_context.Usuarios?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Usuarios?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+        private string CalcularHashMD5(string texto)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                // Convierte la cadena de texto a bytes
+                byte[] inputBytes = Encoding.UTF8.GetBytes(texto);
+
+                // Calcula el hash MD5 de los bytes
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                // Convierte el hash a una cadena hexadecimal
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("x2"));
+                }
+
+                return sb.ToString();
+            }
         }
     }
 }
