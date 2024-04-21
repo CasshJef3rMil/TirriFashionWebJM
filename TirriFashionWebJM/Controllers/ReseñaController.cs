@@ -48,8 +48,8 @@ namespace TirriFashionWebJM.Controllers
         // GET: Reseña/Create
         public IActionResult Create()
         {
-            ViewData["IdCatalogo"] = new SelectList(_context.Catalogos, "Id", "Id");
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "Id", "Id");
+            ViewData["IdCatalogo"] = new SelectList(_context.Catalogos, "Id", "Nombre");
+            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "Id", "Nombre");
             return View();
         }
 
@@ -86,8 +86,8 @@ namespace TirriFashionWebJM.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdCatalogo"] = new SelectList(_context.Catalogos, "Id", "Id", reseña.IdCatalogo);
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "Id", "Id", reseña.IdUsuario);
+            ViewData["IdCatalogo"] = new SelectList(_context.Catalogos, "Id", "Nombre", reseña.IdCatalogo);
+            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "Id", "Nombre", reseña.IdUsuario);
             return View(reseña);
         }
 
