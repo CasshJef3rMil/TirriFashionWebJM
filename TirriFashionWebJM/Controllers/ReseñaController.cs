@@ -70,7 +70,7 @@ namespace TirriFashionWebJM.Controllers
             //}
             //ViewData["IdCatalogo"] = new SelectList(_context.Catalogos, "Id", "Id", reseña.IdCatalogo);
             //ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "Id", "Id", reseña.IdUsuario);
-            return View(reseña);
+           
         }
 
         // GET: Reseña/Edit/5
@@ -102,30 +102,38 @@ namespace TirriFashionWebJM.Controllers
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var existingReseña = await _context.Reseñas.FindAsync(id);
+                if (existingReseña == null)
                 {
-                    _context.Update(reseña);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ReseñaExists(reseña.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                existingReseña.IdCatalogo = reseña.IdCatalogo;
+                existingReseña.IdUsuario = reseña.IdUsuario;
+                existingReseña.Comentario = reseña.Comentario;
+                existingReseña.Calificacion = reseña.Calificacion;
+
+                _context.Update(existingReseña);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ReseñaExists(reseña.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
             ViewData["IdCatalogo"] = new SelectList(_context.Catalogos, "Id", "Id", reseña.IdCatalogo);
             ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "Id", "Id", reseña.IdUsuario);
-            return View(reseña);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Reseña/Delete/5
