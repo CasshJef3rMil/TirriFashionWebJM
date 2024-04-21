@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using TirriFashionWebJM.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<TirriFashionWebJMContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
+
+
 
 var app = builder.Build();
 
