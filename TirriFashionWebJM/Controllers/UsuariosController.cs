@@ -4,13 +4,18 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TirriFashionWebJM.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TirriFashionWebJM.Controllers
 {
+    [Authorize]
     public class UsuariosController : Controller
     {
         private readonly TirriFashionWebJMContext _context;
@@ -64,6 +69,44 @@ namespace TirriFashionWebJM.Controllers
             return View(usuario);
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(string ReturnUrl)
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            ViewBag.ReturnUrl = ReturnUrl;
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Login([Bind("Email,Contraseña")] Usuario usuario, string ReturnUrl)
+        {
+            //Encriptar contraseña
+            usuario.Contraseña = CalcularHashMD5(usuario.Contraseña);
+
+            //que me inicie session todos los usuarios que coincidan EMail y contraseña
+            var usuarioAut = await _context.Usuarios.FirstOrDefaultAsync(s => s.Email == usuario.Email && s.Contraseña == usuario.Contraseña && s.Estatus == 1);
+            if (usuarioAut?.Id > 0 && usuarioAut.Email == usuario.Email)
+            {
+                var claims = new[] {
+                    new Claim(ClaimTypes.Name, usuarioAut.Email),
+                     new Claim(ClaimTypes.Role, usuarioAut.Rol),
+                    new Claim("Id", usuarioAut.Id.ToString())
+                    };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), new AuthenticationProperties { IsPersistent = true }); ;
+                var result = User.Identity.IsAuthenticated;
+                if (!string.IsNullOrWhiteSpace(ReturnUrl))
+                    return Redirect(ReturnUrl);
+                else
+                    return RedirectToAction("Index", "Home");
+            }
+            else
+                ViewBag.Error = "Credenciales incorrectas";
+            ViewBag.pReturnUrl = ReturnUrl;
+            return View(usuario);
+        }
+     
         // GET: Usuarios/Create
         public IActionResult Create()
         {
