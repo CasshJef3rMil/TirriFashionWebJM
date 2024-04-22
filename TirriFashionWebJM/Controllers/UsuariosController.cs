@@ -106,7 +106,8 @@ namespace TirriFashionWebJM.Controllers
             ViewBag.pReturnUrl = ReturnUrl;
             return View(usuario);
         }
-     
+
+        [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Create
         public IActionResult Create()
         {
@@ -116,6 +117,7 @@ namespace TirriFashionWebJM.Controllers
         // POST: Usuarios/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Contraseña,Rol,Estatus")] Usuario usuario)
@@ -128,6 +130,7 @@ namespace TirriFashionWebJM.Controllers
 
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -147,6 +150,7 @@ namespace TirriFashionWebJM.Controllers
         // POST: Usuarios/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Apellido,Edad,Email,Telefono,Rol,Estatus")] Usuario usuario)
@@ -184,6 +188,7 @@ namespace TirriFashionWebJM.Controllers
             return View(usuario);
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -203,6 +208,7 @@ namespace TirriFashionWebJM.Controllers
         }
 
         // POST: Usuarios/Delete/5
+        [Authorize(Roles = "Administrador")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
