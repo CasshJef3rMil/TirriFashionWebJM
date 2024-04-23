@@ -25,6 +25,7 @@ namespace TirriFashionWebJM.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Administrador,Usuario")]
         // GET: Usuarios
         public async Task<IActionResult> Index(Usuario usuario)
         {

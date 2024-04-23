@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using TirriFashionWebJM.Models;
 
 namespace TirriFashionWebJM.Controllers
 {
+    [Authorize]
     public class CatalogoesController : Controller
     {
         private readonly TirriFashionWebJMContext _context;
@@ -18,12 +20,14 @@ namespace TirriFashionWebJM.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         // GET: Catalogoes
         public async Task<IActionResult> Index()
         {
             var tirriFashionWebJMContext = _context.Catalogos.Include(c => c.IdCategoriaNavigation).Include(c => c.IdUsuarioNavigation);
             return View(await tirriFashionWebJMContext.ToListAsync());
         }
+
 
         // GET: Catalogoes/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -45,6 +49,7 @@ namespace TirriFashionWebJM.Controllers
             return View(catalogo);
         }
 
+        [Authorize(Roles = "Administrador,Usuario")]
         // GET: Catalogoes/Create
         public IActionResult Create()
         {
@@ -56,6 +61,7 @@ namespace TirriFashionWebJM.Controllers
         // POST: Catalogoes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrador,Usuario")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,AñoFabricacion,IdUsuario,IdCategoria")] Catalogo catalogo, IFormFile imagen)
@@ -81,7 +87,7 @@ namespace TirriFashionWebJM.Controllers
             //ViewData["CategoriaId"] = new SelectList(_context.Categorias, "CategoriaId", "Nombre", producto.CategoriaId);
             //return View(producto);
         }
-
+        [Authorize(Roles = "Administrador")]
         // GET: Catalogoes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -103,6 +109,7 @@ namespace TirriFashionWebJM.Controllers
         // POST: Catalogoes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Imagen,Descripcion,AñoFabricacion,IdUsuario,IdCategoria")] Catalogo catalogo, IFormFile imagen)
@@ -153,6 +160,7 @@ namespace TirriFashionWebJM.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "Administrador")]
         // GET: Catalogoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -173,6 +181,8 @@ namespace TirriFashionWebJM.Controllers
             return View(catalogo);
         }
 
+
+        [Authorize(Roles = "Administrador")]
         // POST: Catalogoes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

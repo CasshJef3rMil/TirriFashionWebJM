@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,8 @@ using TirriFashionWebJM.Models;
 
 namespace TirriFashionWebJM.Controllers
 {
+
+    [Authorize]
     public class CategoriumsController : Controller
     {
         private readonly TirriFashionWebJMContext _context;
@@ -18,6 +21,7 @@ namespace TirriFashionWebJM.Controllers
             _context = context;
         }
 
+       
         // GET: Categoriums
         public async Task<IActionResult> Index()
         {
@@ -26,6 +30,7 @@ namespace TirriFashionWebJM.Controllers
                           Problem("Entity set 'TirriFashionWebJMContext.Categoria'  is null.");
         }
 
+        [Authorize(Roles = "Administrador,Usuario")]
         // GET: Categoriums/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -44,6 +49,7 @@ namespace TirriFashionWebJM.Controllers
             return View(categorium);
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Categoriums/Create
         public IActionResult Create()
         {
@@ -53,6 +59,7 @@ namespace TirriFashionWebJM.Controllers
         // POST: Categoriums/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre")] Categorium categorium)
@@ -66,6 +73,7 @@ namespace TirriFashionWebJM.Controllers
             return View(categorium);
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Categoriums/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -85,6 +93,8 @@ namespace TirriFashionWebJM.Controllers
         // POST: Categoriums/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre")] Categorium categorium)
@@ -117,6 +127,7 @@ namespace TirriFashionWebJM.Controllers
             return View(categorium);
         }
 
+        [Authorize(Roles = "Administrador")] 
         // GET: Categoriums/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -136,6 +147,7 @@ namespace TirriFashionWebJM.Controllers
         }
 
         // POST: Categoriums/Delete/5
+        [Authorize(Roles = "Administrador")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
