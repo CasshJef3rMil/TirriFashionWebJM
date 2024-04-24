@@ -1,58 +1,41 @@
 ﻿@model IEnumerable<TirriFashionWebJM.Models.Reseña>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Listado de reseñas";
 }
 
-
 <div class="text-center">
-    <h1>Listado de reseñas</h1>
+    <h1>@ViewData["Title"]</h1>
 </div>
+
 <p>
-    <a asp-action="Create">Crear Nueva reseña</a>
+    <a asp-action="Create" class="btn btn-primary">Crear Nueva reseña</a>
 </p>
+
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Comentario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Calificacion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdCatalogoNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdUsuarioNavigation)
-            </th>
-            <th></th>
+            <th>Comentario</th>
+            <th>Calificación</th>
+            <th>Categoría</th>
+            <th>Usuario</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comentario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Calificacion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCatalogoNavigation.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.Nombre)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Comentario)</td>
+                <td>@Html.DisplayFor(modelItem => item.Calificacion)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdCatalogoNavigation.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdUsuarioNavigation.Nombre)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-
-
-

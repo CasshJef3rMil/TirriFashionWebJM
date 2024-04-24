@@ -1,46 +1,41 @@
 ﻿@model IEnumerable<TirriFashionWebJM.Models.Categorium>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista de Categorias";
 }
 
 <div class="text-center">
-<h1>Lista de Categorias</h1>
+    <h1>@ViewData["Title"]</h1>
 </div>
-<p>
+
+<div class="text-right mb-3">
     @if (User.IsInRole("Administrador"))
     {
-        <a class="btn btn-primary" asp-action="Create">Crear Nuevo</a>
+        <a asp-action="Create" class="btn btn-primary">Crear Nuevo</a>
     }
-</p>
+</div>
+
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th></th>
+            <th>Nombre</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
                     @if (User.IsInRole("Administrador"))
                     {
-                        <span> |</span>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-
-                        <span> |</span>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
                     }
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-

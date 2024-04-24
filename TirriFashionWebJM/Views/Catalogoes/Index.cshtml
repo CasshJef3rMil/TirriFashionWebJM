@@ -1,49 +1,37 @@
 ﻿@model IEnumerable<TirriFashionWebJM.Models.Catalogo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista de Catalogos";
 }
 
 <div class="text-center">
-    <h1>Lista de Catalogos</h1>
+    <h1>@ViewData["Title"]</h1>
 </div>
 
+<div class="text-right mb-3">
+    @if (User.IsInRole("Administrador"))
+    {
+        <a asp-action="Create" class="btn btn-primary">Crear Nuevo</a>
+    }
+</div>
 
-<p>
-    <a asp-action="Create">Crear Nuevo</a>
-</p>
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Imagen)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AñoFabricacion)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.IdUsuarioNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdCategoriaNavigation)
-            </th>
-            <th></th>
+            <th>Nombre</th>
+            <th>Imagen</th>
+            <th>Descripción</th>
+            <th>Año de Fabricación</th>
+            <th>Usuario</th>
+            <th>Categoría</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
                 <td>
                     @{
                         string urlBase64 = "";
@@ -53,40 +41,21 @@
                             urlBase64 = "data:image/jpeg;base64," + base64String;
                         }
                     }
-                    <img src="@urlBase64" width="50px" />
+                    <img src="@urlBase64" width="50px" class="img-fluid" />
                 </td>
+                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                <td>@Html.DisplayFor(modelItem => item.AñoFabricacion)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdUsuarioNavigation.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdCategoriaNavigation.Nombre)</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Descripcion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AñoFabricacion)
-                </td>
-                @*   <td>
-            @Html.DisplayFor(modelItem => item.IdCategoriaNavigation.Id)
-            </td> *@
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdCategoriaNavigation.Nombre)
-                </td>
-
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
-
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
                     @if (User.IsInRole("Administrador"))
                     {
-                        <span> |</span>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-
-                        <span> |</span>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
                     }
-
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
