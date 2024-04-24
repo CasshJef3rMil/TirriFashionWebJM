@@ -103,28 +103,25 @@ namespace TirriFashionWebJM.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(reseña);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ReseñaExists(reseña.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(reseña);
+                await _context.SaveChangesAsync();
             }
-            ViewData["IdCatalogo"] = new SelectList(_context.Catalogos, "Id", "Id", reseña.IdCatalogo);
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "Id", "Id", reseña.IdUsuario);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ReseñaExists(reseña.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+            //ViewData["IdCatalogo"] = new SelectList(_context.Catalogos, "Id", "Id", reseña.IdCatalogo);
+            //ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "Id", "Id", reseña.IdUsuario);
             return View(reseña);
         }
 
