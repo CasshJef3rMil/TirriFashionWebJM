@@ -14,7 +14,6 @@ namespace TirriFashionWebJM.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "EL Usuario es requerido.")]
         public string Nombre { get; set; } = null!;
-        [Required(ErrorMessage = "la imagen es obligatoria.")]
         public byte[]? Imagen { get; set; }
         [Required(ErrorMessage = "la descripcion es obligatoria.")]
         public string? Descripcion { get; set; }

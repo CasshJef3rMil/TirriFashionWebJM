@@ -4,7 +4,9 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="text-center">
+    <h1>Listado de Usuarios Registrados</h1>
+</div>
 @* Filtro  *@
 <form asp-action="Index" method="GET">
     <div class="row">
@@ -113,15 +115,15 @@
                     @Html.DisplayFor(modelItem => item.Rol)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
 
                     @if (User.IsInRole("Administrador"))
                     {
                         <span> |</span>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
 
                         <span> |</span>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
                     }
 
                 </td>
